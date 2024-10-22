@@ -1,0 +1,30 @@
+#instal dependencies
+pip install azure-cognitiveservices-vision-customvision
+
+#Code for classification
+from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
+from msrest.authentication import ApiKeyCredentials
+
+ENDPOINT = "give your endpoint"
+PREDICTION_KEY = "give your prediction"  
+PROJECT_ID = "give your project_id"
+ITERATION_NAME = "give your iteration name"  
+
+credentials = ApiKeyCredentials(in_headers={"Prediction-key": PREDICTION_KEY})
+predictor = CustomVisionPredictionClient(ENDPOINT, credentials)
+
+
+def predict_image_from_url(image_url):
+    results = predictor.classify_image_url(
+        project_id=PROJECT_ID,
+        published_name=ITERATION_NAME,
+        url=image_url
+    )
+
+   
+    for prediction in results.predictions:
+        print(f"{prediction.tag_name}: {prediction.probability * 100:.2f}%")
+
+
+image_url = "https://e00-marca.uecdn.es/assets/multimedia/imagenes/2023/06/17/16870061670094.jpg"
+predict_image_from_url(image_url)
